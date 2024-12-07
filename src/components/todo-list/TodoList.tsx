@@ -1,49 +1,43 @@
-import { useFilter, useTasks } from '../../store';
+import { STATUS } from '../../constants/status';
+import { useFilter } from '../../store/useFilterStore';
+import { ITask, useTodoStore } from '../../store/useTodoStore';
+import { MyButton } from '../ui/MyButton';
 
 export const TodoList = () => {
 	const filter = useFilter(state => state.filter);
-	const { removeTask, updateTask } = useTasks();
-	const tasks = useTasks(state => {
-		switch (filter) {
-			case 'completed':
-				return state.tasks.filter(
-					task => task.attributes.status === 'completed'
-				);
-			case 'uncompleted':
-				return state.tasks.filter(
-					task => task.attributes.status === 'uncompleted'
-				);
-			default:
-				return state.tasks;
-		}
-	});
+	const { removeTask, updateTask, getTasks } = useTodoStore();
+
+	const tasks = getTasks(filter);
+
+	const handleUpdate = (task: ITask) => {
+		updateTask(task.id, {
+			...task.attributes,
+			status:
+				task.attributes.status === STATUS.COMPLETED
+					? STATUS.UNCOMPLETED
+					: STATUS.COMPLETED
+		});
+	};
 
 	return (
 		<div>
-			{tasks.length &&
-				tasks.map(task => (
-					<div key={task.id}>
-						<h2>{task.attributes.name}</h2>
-						<p>{task.attributes.description}</p>
-						<button onClick={() => removeTask(task.id)}>Удалить</button>
-						<input
-							type='checkbox'
-							name='status'
-							checked={task.attributes.status === 'completed'}
-							onChange={() => {
-								updateTask(task.id, {
-									data: {
-										...task.attributes,
-										status:
-											task.attributes.status === 'completed'
-												? 'uncompleted'
-												: 'completed'
-									}
-								});
-							}}
-						/>
-					</div>
-				))}
+			{tasks?.length
+				? tasks.map(task => (
+						<div key={task.id}>
+							<h2>{task.attributes.name}</h2>
+							<p>{task.attributes.description}</p>
+							<MyButton onClick={() => removeTask(task.id)}>Удалить</MyButton>
+							<input
+								type='checkbox'
+								name='status'
+								checked={task.attributes.status === STATUS.COMPLETED}
+								onChange={() => {
+									handleUpdate(task);
+								}}
+							/>
+						</div>
+				  ))
+				: 'Задач нет'}
 		</div>
 	);
 };

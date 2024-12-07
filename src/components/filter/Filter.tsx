@@ -1,30 +1,22 @@
-import { useFilter } from '../../store';
+import React from 'react';
+import { FilterButton } from './FilterButton';
+import styled from 'styled-components';
+import { STATUS } from '../../constants/status';
 
-export const Filter = () => {
-	const { filter, setFilter } = useFilter(state => state);
+export const Filter: React.FC = () => {
 	return (
-		<div>
-			<button disabled={filter === 'all'} onClick={() => setFilter('all')}>
-				Все
-			</button>
-			<button
-				disabled={filter === 'completed'}
-				onClick={() => setFilter('completed')}
-			>
-				Завершенные
-			</button>
-			<button
-				disabled={filter === 'uncompleted'}
-				onClick={() => setFilter('uncompleted')}
-			>
-				Незавершенные
-			</button>
-			<button
-				disabled={filter === 'favorite'}
-				onClick={() => setFilter('favorite')}
-			>
-				Избранные
-			</button>
-		</div>
+		<FilterWrapper>
+			<FilterButton filterName={STATUS.ALL}>Все</FilterButton>
+			<FilterButton filterName={STATUS.COMPLETED}>Завершенные</FilterButton>
+			<FilterButton filterName={STATUS.UNCOMPLETED}>Незавершенные</FilterButton>
+			<FilterButton filterName={STATUS.FAVORITE}>Избранные</FilterButton>
+		</FilterWrapper>
 	);
 };
+
+const FilterWrapper = styled.div`
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 20px;
+`;

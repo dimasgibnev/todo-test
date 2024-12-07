@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useTasks } from '../../store';
+import { useTodoStore } from '../../store/useTodoStore';
+import { MyButton } from '../ui/MyButton';
 
-export const AddTodo = () => {
-	const addTask = useTasks(state => state.addTask);
+export const CreateTask = () => {
+	const createTask = useTodoStore(state => state.createTask);
 	const [task, setTask] = useState({
 		name: '',
 		description: '',
@@ -11,7 +12,7 @@ export const AddTodo = () => {
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		addTask({ data: task });
+		createTask(task);
 		setTask({
 			name: '',
 			description: '',
@@ -35,7 +36,7 @@ export const AddTodo = () => {
 					}
 				/>
 
-				<button type='submit'>Добавить</button>
+				<MyButton type='submit'>Добавить</MyButton>
 			</form>
 		</>
 	);
